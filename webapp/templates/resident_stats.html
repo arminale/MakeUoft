@@ -1,24 +1,17 @@
 <!doctype html>
 <html>
 <head>
-  <title>Resident and Room Status</title>
+  <title>Datastore and Firebase Auth Example</title>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
   <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-  <h1>Resident and Room Status</h1>
+  <h1>Datastore and Firebase Auth Example</h1>
   <!-- [START gae_python37_datastore_print_times] -->
-  {% for room in room %}
-    <p>{{ room['number'] }}</p>
-    <p>{{ room['status'] }}</p>
-
-  {% endfor %}
-  {% for res in residents %}
-    <p>{{ res['id'] }}</p>
-    <p>{{ res['name'] }}</p>
-    <p>{{ res['status'] }}</p>
-    <p>{{ res['emergency'] }}</p>
+  <h2>Last 10 visits</h2>
+  {% for time in times %}
+    <p>{{ time['timestamp'] }}</p>
   {% endfor %}
   <!-- [END gae_python37_datastore_print_times] -->
 </body>
