@@ -14,7 +14,7 @@
 
 import datetime
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 
 # [START gae_python37_datastore_store_and_fetch_times]
 from google.cloud import datastore
@@ -45,7 +45,40 @@ def fetch_times(limit):
 # [END gae_python37_datastore_store_and_fetch_times]
 
 
+def create_person(name, fob_id=""):
+    entity = datastore.Entity(key=datastore_client.key('person'))
+    entity.update({
+        'name': name,
+        'fob_id': fob_id,
+        'state': 'SAFE',
+        'location': 'UNKOWN'
+    })
+    datastore_client.put(entity)
+    return entity
+
+
+def get_all_persons():
+    query = datastore_client.query(kind='person')
+    query.order = ['name']
+    persons = query.fetch()
+    return persons
+
+
+@app.route('/persons', methods=['GET', 'POST'])
+def persons_handler():
+    if request.method == 'POST':
+        content = request.get_json()
+        person = create_person(content["name"], content.get("fob_id", ""))
+        return jsonify(person)
+    else:
+        persons = get_all_persons()
+        persons = [person for person in persons]
+        return jsonify(persons)
+
+
 # [START gae_python37_datastore_render_times]
+
+
 @app.route('/')
 def root():
     # Store the current access time in Datastore.
