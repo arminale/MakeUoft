@@ -45,12 +45,13 @@ def fetch_times(limit):
 # [END gae_python37_datastore_store_and_fetch_times]
 
 
-def create_person(name, fob_id=""):
+def create_person(first_name, last_name, fob_id=""):
     entity = datastore.Entity(key=datastore_client.key('person'))
     entity.update({
-        'name': name,
+        'first_name': first_name,
+        'last_name': last_name,
         'fob_id': fob_id,
-        'state': 'SAFE',
+        'status': 'OK',
         'location': 'UNKNOWN',
         'last_location': 'UNKNOWN'
     })
@@ -60,7 +61,7 @@ def create_person(name, fob_id=""):
 
 def get_all_persons():
     query = datastore_client.query(kind='person')
-    query.order = ['name']
+    query.order = ['last_name']
     persons = query.fetch()
     return persons
 
@@ -90,12 +91,19 @@ def location_handler(fob_id):
 def persons_handler():
     if request.method == 'POST':
         content = request.get_json()
-        person = create_person(content["name"], content.get("fob_id", ""))
+        person = create_person(
+            content["first_name"], content["last_name"], content.get("fob_id", ""))
         return jsonify(person)
     else:
         persons = get_all_persons()
         persons = [person for person in persons]
         return jsonify(persons)
+
+
+@app.route('/resident_list.html')
+def list_loader():
+    persons = get_all_persons()
+    return render_template('resident_list.html', residents=persons)
 
 
 @app.route('/')
@@ -106,8 +114,7 @@ def root():
     # Fetch the most recent 10 access times from Datastore.
     times = fetch_times(10)
 
-    return render_template(
-        'index.html', times=times)
+    return render_template('index.html')
 # [END gae_python37_datastore_render_times]
 
 
