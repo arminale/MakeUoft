@@ -19,7 +19,7 @@ from flask import Flask, render_template, request, jsonify
 # [START gae_python37_datastore_store_and_fetch_times]
 from google.cloud import datastore
 
-datastore_client = datastore.Client()
+datastore_client = datastore.Client("makeuoft-268321")
 
 # [END gae_python37_datastore_store_and_fetch_times]
 app = Flask(__name__)
@@ -51,7 +51,8 @@ def create_person(name, fob_id=""):
         'name': name,
         'fob_id': fob_id,
         'state': 'SAFE',
-        'location': 'UNKOWN'
+        'location': 'UNKNOWN',
+        'last_location': 'UNKNOWN'
     })
     datastore_client.put(entity)
     return entity
@@ -64,6 +65,27 @@ def get_all_persons():
     return persons
 
 
+@app.route('/persons/<string:fob_id>/location', methods=["POST"])
+def location_handler(fob_id):
+    if request.method == "POST":
+        query = datastore_client.query(kind='person')
+        query.add_filter('fob_id', '=', fob_id)
+        query.keys_only()
+        person_key = list(query.fetch())[0].key
+        content = request.get_json()
+        room = content["room"]
+        state = content["state"]
+        person = datastore_client.get(person_key)
+        if state == "OUT":
+            person["last_location"] = room
+            person["location"] = "UNKNOWN"
+        elif state == "IN":
+            person["last_location"] = person["location"]
+            person["location"] = room
+        datastore_client.put(person)
+        return jsonify(datastore_client.get(person_key))
+
+
 @app.route('/persons', methods=['GET', 'POST'])
 def persons_handler():
     if request.method == 'POST':
@@ -74,9 +96,6 @@ def persons_handler():
         persons = get_all_persons()
         persons = [person for person in persons]
         return jsonify(persons)
-
-
-# [START gae_python37_datastore_render_times]
 
 
 @app.route('/')
