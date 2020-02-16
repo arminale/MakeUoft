@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+  <title>Resident and Room Statistics</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <h1>Resident Statistics</h1>
+  <!-- [START gae_python37_datastore_print_times] -->
+  <h2>Sonali Dey</h2>
+  {% for time in times %}
+    <p>{{ time['timestamp'] }}</p>
+  {% endfor %}
+  <!-- [END gae_python37_datastore_print_times] -->
+</body>
+</html>
