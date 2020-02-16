@@ -11,7 +11,7 @@
 
 <body>
   <nav class="navbar navbar-expand-md navbar-light">
-    <div class="container"> <a class="navbar-brand text-primary" href="#">
+    <div class="container"> <a class="navbar-brand text-primary" href="index.html">
         <i class="fa d-inline fa-lg fa-stop-circle"></i>
         <b> Old Age Smart Home</b>
       </a> <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbar4" style="">
@@ -19,9 +19,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar4">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item"> <a class="nav-link" href="#">List View</a> </li>
-          <li class="nav-item"> <a class="nav-link" href="#">Floor Plan View</a> </li>
-          <li class="nav-item"> <a class="nav-link" href="#">Resident Well-being Analytics</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="resident_list.html">List View</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="floor_view.html">Floor Plan View</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="resident_stats.html">Resident Well-being Analytics</a> </li>
         </ul>
       </div>
     </div>
@@ -39,8 +39,9 @@
             <h1 contenteditable="true" class="bg-danger text-light"><b class="text-center">EMERGENCIES:</b></h1>
             {% if emergencies == [] %}
             <h1>No emergencies.</h1>
-            {% else}
+            {% else %}
             <h1>{{emergencies[0]['name']}} is experiencing an emergency of type {{emergencies[0]['type']}} at location: {{emergencies[0]['location']}}</h1>
+            {% endif %}
           </div>
         </div>
       </div>
